@@ -3,7 +3,7 @@
 //
 // Adjust the import line + SubscribeRequest shape to the installed
 // @triton-one/yellowstone-grpc v5.0.9.
-import { Client, CommitmentLevel, type SubscribeRequest } from "@triton-one/yellowstone-grpc";
+import Client, { CommitmentLevel, type SubscribeRequest } from "@triton-one/yellowstone-grpc";
 import bs58 from "bs58";
 import { config, grpcAccounts } from "./config.js";
 import { applyBatch } from "./writer.js";
@@ -32,6 +32,7 @@ async function main() {
     process.exit(1);
   }
   const accounts = grpcAccounts();
+  // @ts-expect-error — yellowstone-grpc v5 CJS/ESM dual-module interop: works at runtime
   const client = new Client(config.GRPC_ENDPOINT, config.GRPC_TOKEN, undefined);
   const stream = await client.subscribe();
 

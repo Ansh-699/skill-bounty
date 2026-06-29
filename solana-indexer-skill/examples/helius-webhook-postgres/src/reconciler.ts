@@ -19,16 +19,22 @@ export async function reconcile() {
   );
   if (rows.length === 0) return;
 
-  const statuses = await rpc("getSignatureStatuses", [
-    rows.map((r) => r.signature),
-    { searchTransactionHistory: true },
-  ]);
+  const signatures: string[] = rows.map((r) => r.signature);
+
+  // getSignatureStatuses accepts at most 256 signatures per call. Chunk it.
+  const CHUNK = 100;
+  const statusBySig = new Map<string, any>();
+  for (let i = 0; i < signatures.length; i += CHUNK) {
+    const batch = signatures.slice(i, i + CHUNK);
+    const res = await rpc("getSignatureStatuses", [batch, { searchTransactionHistory: true }]);
+    const values: any[] = res?.value ?? [];
+    batch.forEach((sig, j) => statusBySig.set(sig, values[j]));
+  }
 
   await withTx(async (c) => {
-    // NOTE: a plain for-loop so each await stays INSIDE the transaction.
-    for (let i = 0; i < rows.length; i++) {
-      const sig = rows[i].signature;
-      const st = statuses?.value?.[i];
+    // plain for-loop so each await stays INSIDE the transaction
+    for (const sig of signatures) {
+      const st = statusBySig.get(sig);
       if (st?.confirmationStatus === "finalized") {
         await c.query(`UPDATE raw_transactions SET commitment='finalized' WHERE signature=$1`, [sig]);
         await c.query(`UPDATE events SET commitment='finalized' WHERE signature=$1`, [sig]);

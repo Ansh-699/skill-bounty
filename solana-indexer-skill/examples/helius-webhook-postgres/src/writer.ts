@@ -29,6 +29,8 @@ export async function applyTransaction(c: PoolClient, tx: NormalizedTx) {
        ev.data ? JSON.stringify(ev.data) : null]
     );
     if ((res.rowCount ?? 0) > 0) {
+      // NOTE: outbox is write-only in this reference. A production deployment
+      // adds a dispatcher worker (see skill/reliability.md).
       await c.query(
         `INSERT INTO outbox (topic, payload) VALUES ($1, $2)`,
         ["event.indexed", JSON.stringify({ signature: tx.signature, ii: ev.instructionIndex })]

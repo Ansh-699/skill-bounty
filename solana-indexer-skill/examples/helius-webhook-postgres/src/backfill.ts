@@ -27,8 +27,9 @@ export async function backfill(address: string) {
       const tx = await rpc("getTransaction",
         [s.signature, { maxSupportedTransactionVersion: 0, commitment: "finalized" }]);
       if (!tx) continue;
-      // In production decode via IDL (see parsing.md). Here we reuse the
-      // normalized shape for parity with the live path.
+      // NOTE: backfill stores the RAW transaction only. To populate `events` (and thus
+      // balances/analytics) for historical data, decode each tx with makeAnchorDecoder
+      // + normalizeAnchor (see parsing.md) before applyBatch. Left raw here for brevity.
       await applyBatch([{
         signature: s.signature, slot: tx.slot, blockTime: tx.blockTime,
         commitment: "finalized",

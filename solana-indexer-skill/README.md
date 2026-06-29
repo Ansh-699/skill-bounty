@@ -1,6 +1,6 @@
 # solana-indexer-skill
 
-![CI](https://github.com/anshtyagi/solana-indexer-skill/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Ansh-699/solana-indexer-skill/actions/workflows/ci.yml/badge.svg?branch=main)
 
 
 Production-grade Solana on-chain data indexing & analytics skill for
@@ -109,7 +109,8 @@ examples/
     │   └── migrate.ts             # Dynamic migration runner
     ├── test/
     │   ├── pipeline.test.ts       # Correctness tests
-    │   └── analytics.test.ts      # Materialized view tests
+    │   ├── analytics.test.ts      # Materialized view tests
+    │   └── decode-anchor.test.ts  # Anchor decoder smoke test
     └── README.md
 ```
 
@@ -117,12 +118,13 @@ examples/
 
 ```bash
 cd examples/helius-webhook-postgres
+npm ci                                        # install dependencies (required first)
 docker compose up -d                          # Postgres + Redis
-npm run init                                  # interactive .env setup (or: cp .env.example .env)
+cp .env.example .env                          # or: npm run init  (interactive setup)
 npm run migrate                               # applies all migrations
 npm run doctor                                # verify env, DB, RPC, schema before indexing
-npm run dev                                   # Webhook server on :8080
-npm test                                      # Run test suite
+npm test                                      # run test suite (expect 6 passing)
+npm run dev                                   # webhook server on :8080
 ```
 
 ## Fit with the Solana AI Kit

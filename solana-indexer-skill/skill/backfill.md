@@ -3,6 +3,12 @@
 How to catch up on historical data when you start a new indexer or recover
 from an extended outage.
 
+> **Note:** The reference implementation (`examples/helius-webhook-postgres/src/backfill.ts`)
+> stores the raw transaction only (`events: []`). To populate `events` (and thus
+> `account_balances` / `hourly_volume`) for historical data, decode each transaction
+> with `makeAnchorDecoder` + `normalizeAnchor` (see [parsing.md](parsing.md))
+> before calling `applyBatch`.
+
 ## Strategy 1: Standard RPC (getSignaturesForAddress + getTransaction)
 
 Works with any Solana RPC. Pages newest → oldest using the `before` cursor.

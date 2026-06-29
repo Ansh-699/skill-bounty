@@ -7,10 +7,16 @@ export function normalizeHelius(raw: any): NormalizedTx {
   let ii = 0;
 
   for (const t of raw.tokenTransfers ?? []) {
+    // Prefer the raw base-unit string when present (money-safe); fall back to UI amount.
+    const raw_amt =
+      t.rawTokenAmount?.tokenAmount != null
+        ? String(t.rawTokenAmount.tokenAmount)
+        : String(t.tokenAmount);
+    const neg = raw_amt.startsWith("-") ? raw_amt.slice(1) : `-${raw_amt}`;
     events.push({ instructionIndex: ii++, kind: "token_transfer",
-      account: t.toUserAccount, mint: t.mint, amount: String(t.tokenAmount), data: t });
+      account: t.toUserAccount, mint: t.mint, amount: raw_amt, data: t });
     events.push({ instructionIndex: ii++, kind: "token_transfer",
-      account: t.fromUserAccount, mint: t.mint, amount: String(-t.tokenAmount), data: t });
+      account: t.fromUserAccount, mint: t.mint, amount: neg, data: t });
   }
   for (const n of raw.nativeTransfers ?? []) {
     events.push({ instructionIndex: ii++, kind: "sol_transfer",

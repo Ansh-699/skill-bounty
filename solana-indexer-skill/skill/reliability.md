@@ -73,6 +73,12 @@ After failure: leave as `pending` (or `failed` after N attempts) for retry.
 **Why not dispatch inline?** If the dispatch fails, you'd have to roll back the
 data write too. The outbox decouples "record the intent" from "execute the intent."
 
+> **Note:** The reference implementation (`examples/helius-webhook-postgres/src/writer.ts`)
+> writes to the outbox transactionally with each event but does not include a
+> dispatcher worker. A production deployment adds a dispatcher that reads
+> `status='pending'` rows, delivers them (webhook/queue/NATS), and marks them
+> done — kept out of this reference for brevity.
+
 ## 4. Dead Letter Queue
 
 Payloads that can't be parsed or processed go to `dead_letter` instead of
