@@ -1,6 +1,7 @@
 # solana-indexer-skill
 
-![CI](https://github.com/Ansh-699/solana-indexer-skill/actions/workflows/ci.yml/badge.svg?branch=main)
+Tests (idempotency, out-of-order delivery, reorg rollback, analytics, anchor decoder) run via
+GitHub Actions (Postgres service + Vitest). See `.github/workflows/ci.yml`.
 
 
 Production-grade Solana on-chain data indexing & analytics skill for
