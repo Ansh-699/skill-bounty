@@ -1,0 +1,20 @@
+[
+  {
+    "signature": "5ExampleSig1111111111111111111111111111111111111111111111111111111111111111111111111",
+    "slot": 250000000,
+    "timestamp": 1750000000,
+    "type": "TRANSFER",
+    "source": "SYSTEM_PROGRAM",
+    "fee": 5000,
+    "feePayer": "SenderWa11et1111111111111111111111111111111",
+    "tokenTransfers": [
+      {
+        "fromUserAccount": "SenderWa11et1111111111111111111111111111111",
+        "toUserAccount": "Recipient1111111111111111111111111111111111",
+        "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "tokenAmount": 125.5
+      }
+    ],
+    "nativeTransfers": []
+  }
+]
